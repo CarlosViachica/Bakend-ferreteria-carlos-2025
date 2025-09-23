@@ -47,3 +47,27 @@ export const registrarProducto = async (req, res) => {
     });
   }
 };
+
+export const eliminarProducto = async (req, res) => {
+  try {
+    const id_producto = req.params.id_producto;
+    const [result] = await pool.query(
+      'DELETE FROM productos WHERE id_producto = ?',
+      [id_producto]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        mensaje:'Error al eliminar el producto. El ID ${id_producto} no fue encontrado.'
+      });
+    }
+
+    // Respuesta sin contenido para indicar éxito
+    res.status(204).send();
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Ha ocurrido un error al eliminar el producto.',
+      error: error
+    });
+  }
+};
